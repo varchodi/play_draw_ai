@@ -6,9 +6,14 @@ class SketchPad{
     //drawing paths
     private path: [number, number][];
     // array of all drawing paths 
-    private paths: Array<typeof this.path>;
+    public paths: Array<typeof this.path>;
 
-    private isDrawing: boolean ;
+    private isDrawing: boolean;
+
+    
+    
+    // btn dom elemts 
+    private undobtn: HTMLButtonElement;
     
     // #addEventListener: () => void;
     constructor(container:HTMLDivElement, size: number = 400) {
@@ -20,6 +25,15 @@ class SketchPad{
         //link to conatiner in html
         container.appendChild(this.canvas);
 
+        //undo btns dom componets 
+        const lineBreack = document.createElement("br") as HTMLBRElement
+        container.appendChild(lineBreack);
+
+        //undo btn
+        this.undobtn = document.createElement("button");
+        this.undobtn.innerHTML = "UNDO";
+        container.appendChild(this.undobtn);
+
         //canvas context
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
@@ -30,9 +44,24 @@ class SketchPad{
         //?? id drawing
         this.isDrawing = false;
 
-        //mouse interaction
+        //?? reset (on start , a kind of fresh start)
+        this.reset()
+
+        // !! mouse interaction (call mouse events )
         this.#addEventListener();
 
+        
+
+    }
+
+    // reset the scetchpad (and remove all drawings ..)
+    reset() {
+        this.path = [];
+        this.paths = [];
+        this.isDrawing = false;
+
+        //?? call redraw to fech for past paths
+        this.#redraw();
     }
 
     //events 
@@ -96,6 +125,14 @@ class SketchPad{
         this.canvas.ontouchend = () => {
             this?.canvas?.onmouseup();
         }
+
+        //undo events and functionalities
+        this.undobtn.onclick = () => {
+            //remove the last path
+            this.paths.pop();
+            // redraw everything ../.
+            this.#redraw();
+        }
     }
 
     #getMouse = (evt:MouseEvent) => {
@@ -121,6 +158,13 @@ class SketchPad{
         //draw.path(this.ctx, this.path);
         //?? updated , we draw pathes now
         draw.paths(this.ctx, this.paths);
+
+        //disable redo button when paths is empty
+        if (this.paths.length > 0) {
+            this.undobtn.disabled = false;
+        } else {
+            this.undobtn.disabled = true;
+        }
     }
     
 }

@@ -8,7 +8,15 @@
 <body>
     <div id="content">
         <h1>Data Creator</h1> <br>
-        <div id="sketchPadContainer"></div>
+        <div>
+            <input type="text" id="student" placeholder="type your name">
+            <span id="instructions"></span>
+            <button id="start">Start</button>
+            <!-- <button id="advanceBtn"></button> -->
+        </div>
+
+        <br>
+        <div id="sketchPadContainer" hidden></div>
     </div>
     <script type="module" src="/src/web/main.ts"></script>
     <script type="module" src="/src/web/sketchPad.ts"></script>
