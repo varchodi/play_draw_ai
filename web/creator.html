@@ -2,13 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=0.9,user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=0.9, user-scalable=0">
     <title>Document</title>
 </head>
 <body>
     <div id="content">
         <h1>Data Creator</h1> <br>
-        <div id="sketchPadContainer"></div>
+        <div>
+            <input type="text" id="student" placeholder="type your name">
+            <span id="instructions"></span>
+            <button id="start">Start</button>
+            <!-- <button id="advanceBtn"></button> -->
+        </div>
+
+        <br>
+        <div id="sketchPadContainer" hidden></div>
     </div>
     <script type="module" src="/src/web/main.ts"></script>
     <script type="module" src="/src/web/sketchPad.ts"></script>
