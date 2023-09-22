@@ -132,7 +132,7 @@ class SketchPad{
         this.undobtn.onclick = () => {
             //remove the last path
             this.paths.pop();
-            // redraw everything ../.
+            // redraw everything ..
             this.#redraw();
         }
     }
