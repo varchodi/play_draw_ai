@@ -99,7 +99,8 @@ class SketchPad{
         
         //on mouse up(when mouse (mouse key) not pressed)
         // on drawing
-        this.canvas.onmouseup = () => {
+        //!! remove (not use this.canvas) to resole a glitch
+        document.onmouseup = () => {
             this.isDrawing = false;
         }
 
@@ -122,7 +123,8 @@ class SketchPad{
         }
 
         //when we release our finger
-        this.canvas.ontouchend = () => {
+        //!! remove (not use this.canvas) to resolve a kinda glitch
+        document.ontouchend = () => {
             this?.canvas?.onmouseup();
         }
 
