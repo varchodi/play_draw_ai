@@ -73,6 +73,29 @@ class SketchPad{
         this.canvas.onmouseup = () => {
             this.isDrawing = false;
         }
+
+        //touch screen events 
+        //?? have to be updated -->
+
+        // when we start touching the screen
+        this.canvas.ontouchstart = (evt: any) => {
+            //touch location (get only first touch(finger))
+            const loc = evt?.touches[0];
+            //?? call mousedown evt
+            this?.canvas?.onmousedown(loc);
+        }
+
+        //when mouving fingers (touches)
+        this.canvas.ontouchmove = (evt: any) => {
+            //only one finger
+            const loc = evt?.touches[0];
+            this.canvas.onmousemove(evt);
+        }
+
+        //when we release our finger
+        this.canvas.ontouchend = () => {
+            this?.canvas?.onmouseup();
+        }
     }
 
     #getMouse = (evt:MouseEvent) => {
