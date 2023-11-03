@@ -5,7 +5,7 @@ import SketchPad from './sketchPad'
 const container = document.getElementById("sketchPadContainer") as HTMLDivElement;
 const startBtn = document.getElementById("start") as HTMLButtonElement;
 const instructionSpan = document.getElementById("instructions") as HTMLSpanElement;
-const advanceBtn = document.getElementById("advanceBtn") as HTMLButtonElement;
+//const advanceBtn = document.getElementById("advanceBtn") as HTMLButtonElement;
 
 const sketchPad = new SketchPad(container);
 
