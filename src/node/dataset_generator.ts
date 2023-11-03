@@ -8,6 +8,13 @@ type constantTypes = {
     IMG_DIR?: string;
     SAMPLES?: string;
 }
+
+//canvas stuffs 
+import { Canvas, createCanvas } from 'canvas';
+import { draw_node } from './draw';
+const canvas:Canvas=createCanvas(400,400);
+const ctx = canvas.getContext('2d');
+//constants 
 const constants:constantTypes = {};
 constants.DATA_DIR = '../../data';
 constants.RAW_DIR = constants.DATA_DIR + '/raw';
@@ -37,12 +44,27 @@ fileNames.forEach(fn => {
         });
         //get paths
         const paths = drawings[label];
-        //create file for each drawing id , and put paths there
+        //create file for each drawing id , and put paths (draw) there
         fs.writeFileSync(constants.JSON_DIR + "/" + id + ".json", JSON.stringify(paths));
+
+        //generate imagesFiles for each paths (drawing)
+        generateImageFile(
+            constants.IMG_DIR + "/" + ".png",
+            paths
+        )
         id++;
     }
 })
 
 
 //write samples in sample.json file
-fs.writeFileSync(constants.SAMPLES,JSON.stringify(sample))
+fs.writeFileSync(constants.SAMPLES, JSON.stringify(sample))
+
+//generate image function
+function generateImageFile(outfile:string, paths:[number, number][][])
+{
+    draw_node.paths(ctx as unknown as any, paths);
+    //make buffer
+    const buffer = canvas.toBuffer("image/png");
+    fs.writeFileSync(outfile, buffer);
+}
