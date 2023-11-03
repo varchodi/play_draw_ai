@@ -35,8 +35,10 @@ fileNames.forEach(fn => {
             student_name: student,
             student_id: session
         });
-        //create file for each drawing id , and put drawing(paths , or label) there
-        fs.writeFileSync(constants.JSON_DIR + "/" + id + ".json", JSON.stringify(drawings[label]));
+        //get paths
+        const paths = drawings[label];
+        //create file for each drawing id , and put paths there
+        fs.writeFileSync(constants.JSON_DIR + "/" + id + ".json", JSON.stringify(paths));
         id++;
     }
 })
