@@ -1,4 +1,43 @@
-import fs from 'fs'
+import fs from 'fs';
+
+//=================================================================
+//                  Temporary due to import issues ================
+
+type DrawNode = {
+    path: (ctx: CanvasRenderingContext2D, path: [number, number][], color?: string) => void;
+    paths: (ctx: Canvas, paths: [number, number][][], color?: string) => void;
+}
+
+export const draw_node: DrawNode = {
+    path : (ctx, path, color = "black") => {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        //move to the first item
+        ctx.moveTo(...path[0]);
+        //?? draw other paths 
+        for (let i = 1; i < path.length; i++) {
+            ctx.lineTo(...path[i]);
+        }
+
+        //?? make our drawing more esthetical
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.stroke();
+    },
+
+    // draw paths inside path 
+    paths: (ctx, paths, color = "black") => {
+        for (const path of paths) {
+            //draw each paths 
+            draw_node.path(ctx as unknown as CanvasRenderingContext2D, path, color);
+        }
+    }
+}
+
+//======================================================================================
+//======================================================================================
+
 
 type constantTypes = {
     DATA_DIR?: string;
@@ -11,7 +50,7 @@ type constantTypes = {
 
 //canvas stuffs 
 import { Canvas, createCanvas } from 'canvas';
-import { draw_node } from './draw';
+
 const canvas:Canvas=createCanvas(400,400);
 const ctx = canvas.getContext('2d');
 //constants 
@@ -29,7 +68,9 @@ const fileNames = fs.readdirSync(constants.RAW_DIR);
 const sample: { id: number; label: string; student_name: any; student_id: any; }[] = [];
 let id = 1;
 
-fileNames.forEach(fn => {
+
+
+fileNames.forEach((fn: string) => {
     const content = fs.readFileSync(constants.RAW_DIR + "/" + fn);
     const { session, student, drawings } = JSON.parse(content as unknown as string);
     //console.log('content is: ' + drawings);
@@ -49,7 +90,7 @@ fileNames.forEach(fn => {
 
         //generate imagesFiles for each paths (drawing)
         generateImageFile(
-            constants.IMG_DIR + "/" + ".png",
+            constants.IMG_DIR + "/" + id +".png",
             paths
         )
         id++;
@@ -60,11 +101,21 @@ fileNames.forEach(fn => {
 //write samples in sample.json file
 fs.writeFileSync(constants.SAMPLES, JSON.stringify(sample))
 
+
 //generate image function
 function generateImageFile(outfile:string, paths:[number, number][][])
 {
+    //clear canvas before drawing on canavs
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    //draw paths on x canvas
     draw_node.paths(ctx as unknown as any, paths);
     //make buffer
     const buffer = canvas.toBuffer("image/png");
+
     fs.writeFileSync(outfile, buffer);
 }
+
+
+
+
