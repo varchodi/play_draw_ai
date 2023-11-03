@@ -28,16 +28,19 @@ fileNames.forEach(fn => {
     //console.log('content is: ' + drawings);
 
     for (let label in drawings) {
+        //data labeling (summary)
         sample.push({
             id,
             label,
             student_name: student,
             student_id: session
         });
+        //create file for each drawing id , and put drawing(paths , or label) there
+        fs.writeFileSync(constants.JSON_DIR + "/" + id + ".json", JSON.stringify(drawings[label]));
         id++;
     }
 })
 
-console.log(sample[1]);
 
+//write samples in sample.json file
 fs.writeFileSync(constants.SAMPLES,JSON.stringify(sample))
