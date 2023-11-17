@@ -1,7 +1,9 @@
 import fs from 'fs';
+//canvas stuffs 
+import { Canvas, createCanvas } from 'canvas';
 
 //=================================================================
-//                  Temporary due to import issues ================
+//==================Temporary due to import issues ================
 
 type DrawNode = {
     path: (ctx: CanvasRenderingContext2D, path: [number, number][], color?: string) => void;
@@ -38,7 +40,8 @@ export const draw_node: DrawNode = {
 //======================================================================================
 //======================================================================================
 
-
+//======================================================================================
+//---------------------------- must be in constant file --------------------------------
 type constantTypes = {
     DATA_DIR?: string;
     RAW_DIR?: string;
@@ -46,10 +49,11 @@ type constantTypes = {
     JSON_DIR?: string;
     IMG_DIR?: string;
     SAMPLES?: string;
+    JS_OBJECTS?: string;
+    SAMPLE_JS?: string;
 }
 
-//canvas stuffs 
-import { Canvas, createCanvas } from 'canvas';
+
 
 const canvas:Canvas=createCanvas(400,400);
 const ctx = canvas.getContext('2d');
@@ -62,7 +66,34 @@ constants.JSON_DIR = constants.DATASET_DIR + "/json";
 constants.IMG_DIR = constants.DATASET_DIR + "/img";
 // sample files 
 constants.SAMPLES = constants.DATASET_DIR + "/sample.json";
+//js onjects dir
+constants.JS_OBJECTS = '../../common/js_object';
+constants.SAMPLE_JS=constants.JS_OBJECTS+"/samples.js"
 
+//==========================================================================================
+
+
+//======================================================================================
+//---------------------------- must be in utils file -----------------------------------
+
+const utils = {
+    // format the percentage
+    formatPercent : (n: number) => {
+        return (n * 100).toFixed(2) + "%";
+    },
+
+    //printout the process
+    printProgrees : (count: number, max: number) => {
+        process.stdout.clearLine(0);
+        process.stdout.cursorTo(0);
+
+        //calculate percentage
+        const percent = utils.formatPercent(count / max);
+
+        process.stdout.write(count + '/' + max + '(' + percent + ')');
+    }
+}
+//======================================================================================
 const fileNames = fs.readdirSync(constants.RAW_DIR);
 //create sample array;
 const sample: { id: number; label: string; student_name: any; student_id: any; }[] = [];
@@ -93,6 +124,7 @@ fileNames.forEach((fn: string) => {
             constants.IMG_DIR + "/" + id +".png",
             paths
         )
+        utils.printProgrees(id, fileNames.length * 8);
         id++;
     }
 })

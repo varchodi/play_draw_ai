@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+#datafiles
+./data/dataset/*
+data/dataset/*
+data/dataset
