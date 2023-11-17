@@ -1,74 +1,27 @@
-import fs from 'fs';
+import * as fs from 'node:fs';
+
 //canvas stuffs 
 import { Canvas, createCanvas } from 'canvas';
+import { draw_node } from '../common/draw';
+import { utils } from '../common/utils';
+import { constants } from '../common/constants';
 
 //=================================================================
 //==================Temporary due to import issues ================
 
-type DrawNode = {
-    path: (ctx: CanvasRenderingContext2D, path: [number, number][], color?: string) => void;
-    paths: (ctx: Canvas, paths: [number, number][][], color?: string) => void;
-}
-
-export const draw_node: DrawNode = {
-    path : (ctx, path, color = "black") => {
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        //move to the first item
-        ctx.moveTo(...path[0]);
-        //?? draw other paths 
-        for (let i = 1; i < path.length; i++) {
-            ctx.lineTo(...path[i]);
-        }
-
-        //?? make our drawing more esthetical
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-        ctx.stroke();
-    },
-
-    // draw paths inside path 
-    paths: (ctx, paths, color = "black") => {
-        for (const path of paths) {
-            //draw each paths 
-            draw_node.path(ctx as unknown as CanvasRenderingContext2D, path, color);
-        }
-    }
-}
 
 //======================================================================================
 //======================================================================================
 
 //======================================================================================
 //---------------------------- must be in constant file --------------------------------
-type constantTypes = {
-    DATA_DIR?: string;
-    RAW_DIR?: string;
-    DATASET_DIR?: string;
-    JSON_DIR?: string;
-    IMG_DIR?: string;
-    SAMPLES?: string;
-    JS_OBJECTS?: string;
-    SAMPLE_JS?: string;
-}
 
 
 
 const canvas:Canvas=createCanvas(400,400);
 const ctx = canvas.getContext('2d');
 //constants 
-const constants:constantTypes = {};
-constants.DATA_DIR = '../../data';
-constants.RAW_DIR = constants.DATA_DIR + '/raw';
-constants.DATASET_DIR = constants.DATA_DIR + "/dataset";
-constants.JSON_DIR = constants.DATASET_DIR + "/json";
-constants.IMG_DIR = constants.DATASET_DIR + "/img";
-// sample files 
-constants.SAMPLES = constants.DATASET_DIR + "/sample.json";
-//js onjects dir
-constants.JS_OBJECTS = '../../common/js_object';
-constants.SAMPLE_JS=constants.JS_OBJECTS+"/samples.js"
+
 
 //==========================================================================================
 
@@ -76,25 +29,11 @@ constants.SAMPLE_JS=constants.JS_OBJECTS+"/samples.js"
 //======================================================================================
 //---------------------------- must be in utils file -----------------------------------
 
-const utils = {
-    // format the percentage
-    formatPercent : (n: number) => {
-        return (n * 100).toFixed(2) + "%";
-    },
 
-    //printout the process
-    printProgrees : (count: number, max: number) => {
-        process.stdout.clearLine(0);
-        process.stdout.cursorTo(0);
-
-        //calculate percentage
-        const percent = utils.formatPercent(count / max);
-
-        process.stdout.write(count + '/' + max + '(' + percent + ')');
-    }
-}
 //======================================================================================
-const fileNames = fs.readdirSync(constants.RAW_DIR);
+
+
+const fileNames = fs.readdirSync(constants.RAW_DIR!);
 //create sample array;
 const sample: { id: number; label: string; student_name: any; student_id: any; }[] = [];
 let id = 1;
@@ -131,7 +70,7 @@ fileNames.forEach((fn: string) => {
 
 
 //write samples in sample.json file
-fs.writeFileSync(constants.SAMPLES, JSON.stringify(sample))
+fs.writeFileSync(constants.SAMPLES!, JSON.stringify(sample))
 
 
 //generate image function
