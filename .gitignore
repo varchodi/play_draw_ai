@@ -25,3 +25,9 @@ dist-ssr
 
 #datafiles
 ./data/dataset/*
+data/dataset/*
+data/dataset
+src/data/dataset/*
+./src/data/dataset/*
+src/data/dataset
+./src/data/dataset/
