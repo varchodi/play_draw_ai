@@ -1,8 +1,8 @@
 import { draw } from "./draw";
 
 class SketchPad{
-    private canvas: HTMLCanvasElement;
-    private ctx: CanvasRenderingContext2D;
+    public canvas: HTMLCanvasElement;
+    public ctx: CanvasRenderingContext2D;
     //drawing paths
     private path: [number, number][];
     // array of all drawing paths 
