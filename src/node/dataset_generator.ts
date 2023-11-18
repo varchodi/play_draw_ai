@@ -6,39 +6,13 @@ import { draw_node } from '../common/draw';
 import { utils } from '../common/utils';
 import { constants } from '../common/constants';
 
-//=================================================================
-//==================Temporary due to import issues ================
-
-
-//======================================================================================
-//======================================================================================
-
-//======================================================================================
-//---------------------------- must be in constant file --------------------------------
-
-
-
 const canvas:Canvas=createCanvas(400,400);
 const ctx = canvas.getContext('2d');
-//constants 
-
-
-//==========================================================================================
-
-
-//======================================================================================
-//---------------------------- must be in utils file -----------------------------------
-
-
-//======================================================================================
-
 
 const fileNames = fs.readdirSync(constants.RAW_DIR!);
 //create sample array;
 const sample: { id: number; label: string; student_name: any; student_id: any; }[] = [];
 let id = 1;
-
-
 
 fileNames.forEach((fn: string) => {
     const content = fs.readFileSync(constants.RAW_DIR + "/" + fn);
@@ -70,8 +44,10 @@ fileNames.forEach((fn: string) => {
 
 
 //write samples in sample.json file
-fs.writeFileSync(constants.SAMPLES!, JSON.stringify(sample))
+fs.writeFileSync(constants.SAMPLES!, JSON.stringify(sample));
 
+//generate sample js file to connect with web app
+fs.writeFileSync(constants?.SAMPLE_JS!,"const samples="+ JSON.stringify(sample)+";")
 
 //generate image function
 function generateImageFile(outfile:string, paths:[number, number][][])
@@ -86,7 +62,4 @@ function generateImageFile(outfile:string, paths:[number, number][][])
 
     fs.writeFileSync(outfile, buffer);
 }
-
-
-
 
