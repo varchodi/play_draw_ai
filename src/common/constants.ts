@@ -27,6 +27,6 @@ constants.IMG_DIR = constants.DATASET_DIR + "/img";
 // sample files 
 constants.SAMPLES = constants.DATASET_DIR + "/sample.json";
 //js onjects dir
-constants.JS_OBJECTS = '../common/js_object';
-constants.SAMPLE_JS=constants.JS_OBJECTS+"/samples.js"
+constants.JS_OBJECTS = path.resolve(__dirname,'../common/js_object/')
+constants.SAMPLE_JS=constants.JS_OBJECTS+"/samples.ts"
 
