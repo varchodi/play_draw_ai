@@ -17,4 +17,20 @@ for (let student_id in groups) {
   createRow(container, studentName, samples);
 }
 
+// const options={
+//     size:500,
+//     axesLabels:featureNames,
+//     styles:utils.styles,
+//     transparency:0.7,
+//     icon:"image"
+//  };
+//  graphics.generateImages(utils.styles);
+
+//  const chart=new Chart(
+//     chartContainer,
+//     samples,
+//     options,
+//     handleClick
+//  );
+
 console.log(samples, featureNames);
