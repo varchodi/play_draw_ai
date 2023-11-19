@@ -33,7 +33,7 @@ export const createRow = (container:HTMLElement, studentName: string, samples:Sa
 
         //add styles for flagged users
         if (utils.flaggedUsers.includes(student_id)) {
-            img.classList.add('blur');
+            img.classList.add('blur')
         }
 
         sampleContainer.appendChild(img);
