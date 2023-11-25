@@ -47,4 +47,15 @@ export const math = {
       ),
     ];
   },
+  add: (p1: number[], p2: number[]) => {
+    return [p1[0] + p2[0], p1[1] + p2[1]];
+  },
+
+  subtract: (p1: number[], p2: number[]) => {
+    return [p1[0] - p2[0], p1[1] - p2[1]];
+  },
+
+  scale: (p: number[], scaler: number) => {
+    return [p[0] * scaler, p[1] * scaler];
+  },
 };

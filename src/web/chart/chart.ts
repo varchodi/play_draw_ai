@@ -21,6 +21,9 @@ export class Chart {
   private margin = 0;
   private transparency = 0.5;
   private axesLabels = ["Kilometers", "Price"];
+  public defaultDataBounds;
+  private dragInfo;
+  private dataTrans;
 
   public pixelBounds: {
     left: number;
@@ -50,13 +53,110 @@ export class Chart {
 
     this.margin = options.size * 0.1;
     this.transparency = 0.5;
+
+    this.dataTrans = {
+      offset: [0, 0],
+      scale: 1,
+    };
+    this.dragInfo = {
+      start: [0, 0],
+      end: [0, 0],
+      offset: [0, 0],
+      dragging: false,
+    };
+
     //bounds
     this.pixelBounds = this.#getPixelBounds();
     this.dataBounds = this.#getDataBounds();
+    this.defaultDataBounds = this.#getDataBounds();
 
     //draw
     this.#draw();
+
+    //add events listeners
+    this.#addEventsListeners();
   }
+
+  //?? events listeners ...
+  #addEventsListeners() {
+    const { canvas, dataTrans, dragInfo } = this;
+    canvas.onmousedown = (e: MouseEvent) => {
+      const dataLoc = this.#getMouse(e, true);
+
+      dragInfo.start = dataLoc;
+      dragInfo.dragging = true;
+    };
+    //?? move
+    canvas.onmousemove = (evt: MouseEvent) => {
+      if (dragInfo.dragging) {
+        const dataLoc = this.#getMouse(evt, true);
+        dragInfo.end = dataLoc;
+        dragInfo.offset = math.subtract(dragInfo.start, dragInfo.end);
+        const newOffset = math.add(dataTrans.offset, dragInfo.offset);
+        this.#updateDataBounds(newOffset, dataTrans.scale);
+
+        this.#draw();
+      }
+    };
+
+    canvas.onmouseup = () => {
+      dataTrans.offset = math.add(dataTrans.offset, dragInfo.offset);
+      dragInfo.dragging = false;
+    };
+
+    //scaling on wheel??
+    canvas.onwheel = (evt: WheelEvent) => {
+      const dir = Math.sign(evt.deltaY);
+      const step = 0.02;
+      dataTrans.scale += dir * step;
+
+      this.#updateDataBounds(dataTrans.offset, dataTrans.scale);
+
+      this.#draw();
+      evt.preventDefault();
+    };
+  }
+
+  //??update data bounds
+  #updateDataBounds(offset: number[], scale: number) {
+    const { dataBounds, defaultDataBounds: def } = this;
+    dataBounds.left = def.left + offset[0];
+    dataBounds.right = def.right + offset[0];
+    dataBounds.top = def.top + offset[1];
+    dataBounds.bottom = def.bottom + offset[1];
+
+    const center = [
+      (dataBounds.left + dataBounds.right) / 2,
+      (dataBounds.top + dataBounds.bottom) / 2,
+    ];
+    //?? left
+    dataBounds.left = math.lerp(center[0], dataBounds.left, scale);
+    //?? right
+    dataBounds.right = math.lerp(center[0], dataBounds.right, scale);
+    //?? top
+    dataBounds.top = math.lerp(center[1], dataBounds.top, scale);
+    //??bottom
+    dataBounds.bottom = math.lerp(center[1], dataBounds.bottom, scale);
+  }
+
+  //??get mouse coordinates or point coordinate
+  #getMouse = (evt: MouseEvent, dataSpace = false): number[] => {
+    const rect = this.canvas.getBoundingClientRect();
+    const pixelLoc = [evt.clientX - rect.left, evt.clientY - rect.top];
+    if (dataSpace) {
+      const dataLoc = math.remapPoint(
+        this.pixelBounds,
+        this.defaultDataBounds,
+        pixelLoc
+      );
+
+      return dataLoc;
+    }
+
+    return pixelLoc;
+  };
+
+  //?? methods
   #getPixelBounds() {
     const { canvas, margin } = this;
     const bounds = {
