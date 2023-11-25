@@ -1,5 +1,6 @@
 import { Chart } from "./chart";
 import "./chart.css";
+import { graphics } from "./graphics";
 import { math } from "./math";
 
 //generate same fake data(kinda of cars)
@@ -30,17 +31,22 @@ const options = {
   size: 250,
   axeLabel: ["Kilometers", "price"],
   styles: {
-    basic: { color: "gray", text: "🚗" },
-    sport: { color: "red", text: "🏎️" },
+    basic: { color: "cyan", text: "🚘" },
+    sport: { color: "magenta", text: "🥴" },
   },
-  icon: "text",
+  icon: "image",
 };
 
 const chartContainer = document.getElementById(
   "chartContainer"
 ) as HTMLDivElement;
+
+graphics.generateImages(options.styles);
 //chart init
-const chart = new Chart(chartContainer, samples, options);
+
+setTimeout(() => {
+  const chart = new Chart(chartContainer, samples, options);
+}, 100);
 
 //?? ----------------------
 const dataTable = document.getElementById("dataTable") as HTMLTableElement;

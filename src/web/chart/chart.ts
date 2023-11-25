@@ -6,7 +6,10 @@ export type SampleTypes = {
   label: "basic" | "sport";
   point: [number, number];
 };
-export type ChartStylesType = Record<string, { color: string; text: string }>;
+export type ChartStylesType = Record<
+  string,
+  { color: string; text: string; image?: any }
+>;
 
 export type OptionsType = {
   size: number;
@@ -304,6 +307,9 @@ export class Chart {
             loc: pixelloc,
             size: 20,
           });
+          break;
+        case "image":
+          graphics.drawimage(ctx, this.styles[label].image, pixelloc);
           break;
         default:
           graphics.drawpoint(ctx, pixelloc, this.styles[label].color);
