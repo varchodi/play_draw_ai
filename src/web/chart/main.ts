@@ -30,9 +30,10 @@ const options = {
   size: 250,
   axeLabel: ["Kilometers", "price"],
   styles: {
-    baseic: "gray",
-    sport: "blue",
+    basic: { color: "gray", text: "🚗" },
+    sport: { color: "red", text: "🏎️" },
   },
+  icon: "text",
 };
 
 const chartContainer = document.getElementById(

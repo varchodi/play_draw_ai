@@ -6,17 +6,19 @@ export type SampleTypes = {
   label: "basic" | "sport";
   point: [number, number];
 };
-export type ChartStylesType = Record<string, string>;
+export type ChartStylesType = Record<string, { color: string; text: string }>;
 
 export type OptionsType = {
   size: number;
   axeLabel: string[];
   styles: ChartStylesType;
+  icon?: string;
 };
 export class Chart {
   public samples: SampleTypes[];
   public canvas: HTMLCanvasElement = document.createElement("canvas");
   public styles: ChartStylesType = {};
+  public icon = "";
   private ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
   private margin = 0;
   private transparency = 0.5;
@@ -51,8 +53,10 @@ export class Chart {
     this.canvas.style.backgroundColor = "white";
     container.appendChild(this.canvas);
 
+    this.icon = options.icon!;
+
     this.margin = options.size * 0.1;
-    this.transparency = 0.5;
+    this.transparency = 0.7;
 
     this.dataTrans = {
       offset: [0, 0],
@@ -91,7 +95,10 @@ export class Chart {
       if (dragInfo.dragging) {
         const dataLoc = this.#getMouse(evt, true);
         dragInfo.end = dataLoc;
-        dragInfo.offset = math.subtract(dragInfo.start, dragInfo.end);
+        dragInfo.offset = math.scale(
+          math.subtract(dragInfo.start, dragInfo.end),
+          dataTrans.scale
+        );
         const newOffset = math.add(dataTrans.offset, dragInfo.offset);
         this.#updateDataBounds(newOffset, dataTrans.scale);
 
@@ -109,6 +116,7 @@ export class Chart {
       const dir = Math.sign(evt.deltaY);
       const step = 0.02;
       dataTrans.scale += dir * step;
+      dataTrans.scale = Math.max(step, Math.min(2, dataTrans.scale));
 
       this.#updateDataBounds(dataTrans.offset, dataTrans.scale);
 
@@ -130,13 +138,13 @@ export class Chart {
       (dataBounds.top + dataBounds.bottom) / 2,
     ];
     //?? left
-    dataBounds.left = math.lerp(center[0], dataBounds.left, scale);
+    dataBounds.left = math.lerp(center[0], dataBounds.left, scale ** 2);
     //?? right
-    dataBounds.right = math.lerp(center[0], dataBounds.right, scale);
+    dataBounds.right = math.lerp(center[0], dataBounds.right, scale ** 2);
     //?? top
-    dataBounds.top = math.lerp(center[1], dataBounds.top, scale);
+    dataBounds.top = math.lerp(center[1], dataBounds.top, scale ** 2);
     //??bottom
-    dataBounds.bottom = math.lerp(center[1], dataBounds.bottom, scale);
+    dataBounds.bottom = math.lerp(center[1], dataBounds.bottom, scale ** 2);
   }
 
   //??get mouse coordinates or point coordinate
@@ -287,9 +295,19 @@ export class Chart {
     const { ctx, samples, dataBounds, pixelBounds } = this;
 
     for (const sample of samples) {
-      const { point } = sample;
+      const { point, label } = sample;
       const pixelloc = math.remapPoint(dataBounds, pixelBounds, point);
-      graphics.drawpoint(ctx, pixelloc);
+      switch (this.icon) {
+        case "text":
+          graphics.drawText(ctx, {
+            text: this.styles[label].text,
+            loc: pixelloc,
+            size: 20,
+          });
+          break;
+        default:
+          graphics.drawpoint(ctx, pixelloc, this.styles[label].color);
+      }
     }
   }
 }
