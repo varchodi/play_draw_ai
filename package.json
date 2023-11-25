@@ -2,13 +2,13 @@
   "name": "drawing_pred",
   "private": true,
   "version": "0.0.0",
-  
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/google.visualization": "^0.0.72",
     "@types/node": "^20.8.10",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
