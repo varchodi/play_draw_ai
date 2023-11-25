@@ -27,7 +27,7 @@ for (let i = 1; i <= N; i++) {
 }
 
 const options = {
-  size: 250,
+  size: 500,
   axeLabel: ["Kilometers", "price"],
   styles: {
     baseic: "gray",
